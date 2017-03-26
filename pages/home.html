@@ -168,7 +168,22 @@
         }
 
         $(document).ready(function () {
-            setToolDetail();
+
+            $.ajax({
+                type: "GET",
+                url: "http://" + server + ":7991/startUp",
+                crossDomain: true,
+                dataType: 'json',
+                data: {},
+                success: function (response) {
+                    setCookie("version", response.displayVersion);
+                    setCookie("localMode", response.localMode);
+                    setToolDetail();
+                },
+                error: function (response) {
+
+                }
+            });
 
             var $table = $('#table');
 
@@ -348,7 +363,9 @@
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
+                    <!--
                     <span class="icon-bar"></span>
+                    -->
                 </button>
                 <a class="navbar-brand" href="home.html" style="font-size: 21px;" id="tool-name"></a>
                 <span class="navbar-brand" style="font-size: 18px;" id="tool-version"></span>
@@ -362,9 +379,11 @@
                 <li>
                     <a href="addjob.html">Add Job</a>
                 </li>
+                <!--
                 <li>
                     <a href="jobresults.html">Job Results</a>
                 </li>
+                -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>

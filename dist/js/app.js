@@ -395,7 +395,7 @@ function concatExclude(srcColumns, srcExcluded) {
     return srcColumns.concat(tmp);
 }
 
-function prepareAdvancedRule(reload, srcColumns, srcExcluded, distColumns, distExcluded, primaryKeys, srcTransformations, distTransformations, srcFiterSql, distFilterSql, matchBoth, compareCommon) {
+function prepareAdvancedRule(reload, srcColumns, srcExcluded, distColumns, distExcluded, primaryKeys, srcTransformations, distTransformations, srcFiterSql, distFilterSql, matchBoth, compareCommon, randomSample) {
     if (reload == true) {   //determine to create or show
         resetRuleData();
 
@@ -549,17 +549,22 @@ function prepareAdvancedRule(reload, srcColumns, srcExcluded, distColumns, distE
         });
 
         //Write src excluded columns to list
-
         for (var i = 0; i < srcExcluded.length; i++) {
-            //insertLi(srcExUl, srcExcluded[i], srcExcluded[i].dataType);
-            //insertLi(srcUl, srcExcluded[i], srcExcluded[i].dataType);
-            insertCheckLi(srcUl, srcExcluded[i], srcExcluded[i].dataType == null ? 'no' : srcExcluded[i].dataType);
-            insertMapper(mapper, false);
+            for (var j = 0; j < srcColumns.length; j++) {
+                if (srcExcluded[i] == srcColumns[j].name) {
+                    insertCheckLi(srcUl, srcColumns[j].name, srcColumns[j].dataType == null ? 'no' : srcColumns[j].dataType);
+                    insertMapper(mapper, false);
+                }
+            }
         }
+
         //Write dist excluded columns to list
         for (var i = 0; i < distExcluded.length; i++) {
-            //insertLi(distExUl, distExcluded[i], distExcluded[i].dataType);
-            insertLi(distUl, distExcluded[i], distExcluded[i].dataType == null ? 'no' : distExcluded[i].dataType);
+            for (var j = 0; j < distColumns.length; j++) {
+                if (distExcluded[i] == distColumns[j].name) {
+                    insertLi(distUl, distColumns[j].name, distColumns[j].dataType == null ? 'no' : distColumns[j].dataType);
+                }
+            }
         }
         /***********************************End Generating Column Map Tab***************************************/
         /*******************************************************************************************************/
@@ -568,6 +573,8 @@ function prepareAdvancedRule(reload, srcColumns, srcExcluded, distColumns, distE
 
         $('#rule_matchboth').prop( "checked", matchBoth );
         //$('#rule_compare').prop("checked", compareCommon);
+        if (randomSample != false && randomSample != null)
+            $('#rule_randomsample').val(randomSample);
 
         /***********************************Generate Transformations Tab****************************************/
         /*******************************************************************************************************/
@@ -743,10 +750,9 @@ function getInputData(compareCommon) {
     //result["compareCommonColumnsOnly"] = $('#rule_compare')[0].checked;
     result["compareCommonColumnsOnly"] = compareCommon;
     //result["validateRowsCount"] = $('#rule_validaterowscount')[0].checked;
-    /*
+
     if ($('#rule_randomsample').val() != '')
-        result["randomSample"] = $('#rule_randomsample').val();
-        */
+        result["randomSample"] = parseInt($('#rule_randomsample').val());
     result["matchBoth"] = $('#rule_matchboth')[0].checked;
     result["process"] = true;
 
@@ -789,7 +795,12 @@ function getInputData(compareCommon) {
     if (srcFile["srcFormat"] == "CSV") {
         srcFile["header"] = $('#src_header').val() == "True" ? true : false;
         srcFile["srcDelimiter"] = $('#src_delimiter').val();
-        srcFile["useOtherSchema"] = false;
+        if (srcFile["header"])
+            srcFile["useOtherSchema"] = true;
+        else {
+            srcFile["useOtherSchema"] = false;
+            srcFile["columns"] = $('#src_file_schema').val().split(srcFile["srcDelimiter"]);
+        }
     } else if (srcFile["srcFormat"] == "JDBC") {
         var jdbcData = {};
         jdbcData["jdbcUrl"] = $('#src_url').val();
@@ -832,7 +843,12 @@ function getInputData(compareCommon) {
     if (distFile["srcFormat"] == "CSV") {
         distFile["header"] = $('#dist_header').val() == "True" ? true : false;
         distFile["srcDelimiter"] = $('#dist_delimiter').val();
-        distFile["useOtherSchema"] = false;
+        if (distFile["header"])
+            distFile["useOtherSchema"] = true;
+        else {
+            distFile["useOtherSchema"] = false;
+            distFile["columns"] = $('#dist_file_schema').val().split(distFile["srcDelimiter"]);
+        }
     } else if (distFile["srcFormat"] == "JDBC") {
         var jdbcData = {};
         jdbcData["jdbcUrl"] = $('#dist_url').val();
@@ -911,6 +927,8 @@ function makeInputJson(jobname, compareCommonColumnsOnly, validateRowsCount, ran
 
     filesCompareData["matchBoth"] = matchBoth;
 
+    filesCompareData["randomSample"] = randomSample;
+
     filesCompareData["primaryKey"] = primaryKey;
 
     filesCompareData["process"] = true;
@@ -938,4 +956,14 @@ function makeInputJson(jobname, compareCommonColumnsOnly, validateRowsCount, ran
     filesCompareList.push(filesCompareData);
     jsonTree["filesCompareList"] = filesCompareList;
     return JSON.stringify(jsonTree);
+}
+
+function colMapHelp() {
+    //window.location.href = "https://tobymcdowell.wixsite.com/difftool/documentation";
+    window.open("https://tobymcdowell.wixsite.com/difftool/documentation", '_blank', 'location=yes,scrollbars=yes,status=yes');
+}
+
+function transHelp() {
+    //window.location.href = "https://tobymcdowell.wixsite.com/difftool/documentation";
+    window.open("https://tobymcdowell.wixsite.com/difftool/documentation", '_blank', 'location=yes,scrollbars=yes,status=yes');
 }

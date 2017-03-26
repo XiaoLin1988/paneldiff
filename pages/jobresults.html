@@ -221,7 +221,7 @@
                     response.inputData.primaryKey,
                     response.inputData.srcFile.transformations, response.inputData.distFile.transformations,
                     response.inputData.srcFile.filterSql, response.inputData.distFile.filterSql,
-                    false, response.srcRowCount != response.distRowCount
+                    response.inputData.matchBoth, response.srcRowCount != response.distRowCount, response.inputData.randomSample
             );
             $('#advancedRulesModal').modal();
         }
@@ -253,25 +253,35 @@
                 return;
             }
             data.jobname = info.inputData.name;
-            data.compareCommonColumnsOnly = info.inputData.compareCommonColumnsOnly;
-            data.validateRowsCount = info.inputData.validateRowsCount;
-            data.randomSample = info.inputData.randomSample;
+            //data.compareCommonColumnsOnly = info.inputData.compareCommonColumnsOnly;
+            //data.validateRowsCount = info.inputData.validateRowsCount;
+            //data.randomSample = info.inputData.randomSample;
 
+            data.srcFile.filterSql = info.inputData.srcFile.filterSql;
             data.srcFile.srcPath = info.inputData.srcFile.srcPath;
             data.srcFile.srcFormat = info.inputData.srcFile.srcFormat;
             if (data.srcFile.srcFormat == "CSV") {
                 data.srcFile.header = info.inputData.srcFile.header;
                 data.srcFile.srcDelimiter = info.inputData.srcFile.srcDelimiter;
+                data.srcFile.useOtherSchema = info.inputData.srcFile.useOtherSchema;
+                if (!data.srcFile.useOtherSchema) {
+                    data.srcFile.columns = info.inputData.srcFile.columns;
+                }
             }
 
+            data.distFile.filterSql = info.inputData.distFile.filterSql;
             data.distFile.srcPath = info.inputData.distFile.srcPath;
             data.distFile.srcFormat = info.inputData.distFile.srcFormat;
             if (data.distFile.srcFormat == "CSV") {
                 data.distFile.header = info.inputData.distFile.header;
                 data.distFile.srcDelimiter = info.inputData.distFile.srcDelimiter;
+                data.distFile.useOtherSchema = info.inputData.distFile.useOtherSchema;
+                if (!data.distFile.useOtherSchema) {
+                    data.distFile.columns = info.inputData.distFile.columns;
+                }
             }
             var jsonStr = makeInputJson(data.jobname,data.compareCommonColumnsOnly,
-                    data.validateRowsCount,data.randomSample,true,true,
+                    data.validateRowsCount,data.randomSample,data.matchBoth,true,
                     data.columnMapping,data.srcFile,data.distFile,data.primaryKey);
             $.ajax({
                 type: "POST",
@@ -541,7 +551,21 @@
         })
 
         $(document).ready(function () {
-            setToolDetail();
+            $.ajax({
+                type: "GET",
+                url: "http://" + server + ":7991/startUp",
+                crossDomain: true,
+                dataType: 'json',
+                data: {},
+                success: function (response) {
+                    setCookie("version", response.displayVersion);
+                    setCookie("localMode", response.localMode);
+                    setToolDetail();
+                },
+                error: function (response) {
+
+                }
+            });
 
             $( "#src_column" ).sortable({
                 connectWith: ".connectedSortable1",
@@ -575,7 +599,9 @@
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
+                    <!--
                     <span class="icon-bar"></span>
+                    -->
                 </button>
                 <a class="navbar-brand" href="home.html" style="font-size: 21px;" id="tool-name"></a>
                 <span class="navbar-brand" style="font-size: 18px;" id="tool-version"></span>
@@ -589,9 +615,11 @@
                 <li>
                     <a href="addjob.html">Add Job</a>
                 </li>
+                <!--
                 <li>
                     <a href="jobresults.html">Job Results</a>
                 </li>
+                -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
@@ -775,6 +803,7 @@
                     </ul>
                     <div class="tab-content" style="margin-top: 20px;">
                         <div class="row tab-pane fade active in" id="column_map">
+                            <img src="../dist/img/help.png" width="30px" height="30px" style="position: fixed;right: 20px;top: 125px" onclick="colMapHelp()" />
                             <div class="checkbox" style="width: 620px; margin: 0 auto">
                                 <label style="margin-right: 10px"><input type="checkbox" value="" id="rule_matchboth">Compare two way</label>
                                 <!--<label style="float: right;"><input type="checkbox" value="" id="rule_compare" disabled>Compare only common columns</label>-->
@@ -865,6 +894,7 @@
                             -->
                         </div>
                         <div class="row tab-pane fade" id="transmation">
+                            <img src="../dist/img/help.png" width="30px" height="30px" style="position: fixed;right: 20px;top: 125px" onclick="transHelp()" />
                             <div class="col-md-6">
                                 <label>Source Transformations</label>
                                 <div class="form-group row" style="margin-top: 15px;">
@@ -919,7 +949,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" id="btn_cancel_rules">Cancel</button>
-                    <a class="btn btn-success btn-ok" id="btn_save_rules">Save</a>
+                    <a class="btn btn-success btn-ok" id="btn_save_rules">Submit Job</a>
                 </div>
             </div>
         </div>

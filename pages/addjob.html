@@ -189,7 +189,7 @@
 				prepareAdvancedRule(true, srcColumns, [],
 						distColumns, [],
 						[],
-						[], [], '', '', false, srcRecordCnt != distRecordCnt
+						[], [], '', '', false, srcRecordCnt != distRecordCnt, 0
 				);
 			}
 		}
@@ -205,7 +205,7 @@
 				return;
 			}
 			var jsonStr = makeInputJson(data.jobname,data.compareCommonColumnsOnly,
-					data.validateRowsCount,data.randomSample,true,true,
+					data.validateRowsCount,data.randomSample,data.matchBoth,true,
 					data.columnMapping,data.srcFile,data.distFile,data.primaryKey);
 			$.ajax({
 				type: "POST",
@@ -695,7 +695,21 @@
 		}
 
 		$(function () {
-			setToolDetail();
+			$.ajax({
+				type: "GET",
+				url: "http://" + server + ":7991/startUp",
+				crossDomain: true,
+				dataType: 'json',
+				data: {},
+				success: function (response) {
+					setCookie("version", response.displayVersion);
+					setCookie("localMode", response.localMode);
+					setToolDetail();
+				},
+				error: function (response) {
+
+				}
+			});
 
 			$( "#src_column" ).sortable({
 				connectWith: ".connectedSortable1",
@@ -720,7 +734,9 @@
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
+					<!--
                     <span class="icon-bar"></span>
+                    -->
                 </button>
 				<a class="navbar-brand" href="home.html" style="font-size: 21px;" id="tool-name"></a>
 				<span class="navbar-brand" style="font-size: 18px;" id="tool-version"></span>
@@ -734,9 +750,11 @@
                 <li>
                     <a href="addjob.html">Add Job</a>
                 </li>
+				<!--
                 <li>
                     <a href="jobresults.html">Job Results</a>
                 </li>
+                -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
@@ -1081,6 +1099,7 @@
 						</li>
 					</ul>
 					<div class="tab-content" style="margin-top: 20px;">
+						<img src="../dist/img/help.png" width="30px" height="30px" style="position: fixed;right: 20px;top: 125px" onclick="transHelp()" />
 						<div class="row tab-pane fade active in" id="column_map">
 							<div class="checkbox" style="width: 620px; margin: 0 auto">
 								<label style="margin-right: 10px"><input type="checkbox" value="" id="rule_matchboth">Compare two way</label>
@@ -1172,6 +1191,7 @@
 							-->
 						</div>
 						<div class="row tab-pane fade" id="transmation">
+							<img src="../dist/img/help.png" width="30px" height="30px" style="position: fixed;right: 20px;top: 125px" onclick="transHelp()" />
 							<div class="col-md-6">
 								<label>Source Transformations</label>
 								<div class="form-group row" style="margin-top: 15px;">
