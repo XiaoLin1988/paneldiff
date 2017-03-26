@@ -340,6 +340,7 @@
 
         // Show Stats Table
         function setStatsTable(stats) {
+            /*
             $('.srcrecordscount').html(stats.srcRecordsCount);
             $('.distrecordscount').html(stats.distRecordsCount);
             $('.totalsrcrecordsmatching').html(stats.totalSrcRecordsMatching);
@@ -348,6 +349,14 @@
             $('.totaldistrecordsnotmatching').html(stats.totalDistRecordsNotMatching);
             $('.columnsnotmatching').html(JSON.stringify(stats.columnsNotMatching));
             $('.columnsnotmatchingmap').html(JSON.stringify(stats.columnsNotMatchingMap));
+            */
+            var src_percent = (stats.totalSrcRecordsMatching / stats.srcRecordsCount) * 100;
+            $('#src_percent').html(parseInt(src_percent) + "%");
+            $('#src_count').html("(" + stats.totalSrcRecordsMatching + " / " + stats.srcRecordsCount + ")");
+
+            var dist_percent = (stats.totalDistRecordsMatching / stats.distRecordsCount) * 100;
+            $('#dist_percent').html(parseInt(dist_percent) + "%");
+            $('#dist_count').html("(" + stats.totalDistRecordsMatching + " / " + stats.distRecordsCount + ")");
         }
 
         // Show data to Table
@@ -684,21 +693,20 @@
             </div>
 
             <!-- /.row -->
-
+            <!--
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <!--
                         <label for="sel1">Choose File:</label>
                         <select class="selectfile selectpicker" id="sel1">
                             <option>diff_result.json</option>
                             <option>us-demographic-data-result.json</option>
                         </select>
-                        -->
-                        <!--<div style="margin-top: 15px;"><input type="file" name="myfile" id="sel2" onchange="doJsonUpload(event)"></div>-->
+                        <div style="margin-top: 15px;"><input type="file" name="myfile" id="sel2" onchange="doJsonUpload(event)"></div>
                     </div>
                 </div>
             </div>
+            -->
             <!-- /.row -->
 
             <div class="row">
@@ -708,13 +716,14 @@
                             <h3 class="panel-title">Stats</h3>
                             <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
                         </div>
+                        <!--
                         <table class="table table-bordered table-striped specialCollapse" id="stats">
                             <thead style="display: none">
                                 <tr>
                                     <th class="col-md-3"><small>1</small></th>
-                                    <th class="col-md-5"><small>2</small></th>
+                                    <th class="col-md-3"><small>2</small></th>
                                     <th class="col-md-3"><small>3</small></th>
-                                    <th class="col-md-1"><small>4</small></th>
+                                    <th class="col-md-3"><small>4</small></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -748,6 +757,19 @@
                                 <td><small></small></td>
                                 <td><small></small></td>
                             </tr>
+                            </tbody>
+                        </table>
+                        -->
+                        <table class="table table-bordered table-striped specialCollapse" id="stats">
+                            <tbody>
+                                <tr>
+                                    <td class="col-md-3" style="text-align: right;vertical-align: middle;"><small>Source Records Matching : </small></td>
+                                    <td class="col-md-9"><small id="src_percent" style="font-size: 15pt;"></small><small id="src_count" style="position: relative;bottom: 2px;margin-left: 10px;"></small></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-3" style="text-align: right;vertical-align: middle;"><small>Destination Records Matching : </small></td>
+                                    <td class="col-md-9"><small id="dist_percent" style="font-size: 15pt;"></small><small id="dist_count" style="position: relative;bottom: 2px;margin-left: 10px;"></small></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
