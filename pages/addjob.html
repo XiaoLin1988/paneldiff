@@ -455,17 +455,16 @@
 					params["srcDelimiter"] = $('#src_delimiter').val();
 					if (params["srcDelimiter"] == '')
 						return;
-				}
-
-				if ($('#src_file_schema').val() == '') {
-					if (params["header"] == false){
-						return;
-						alert("You should input schema.");
+					if ($('#src_file_schema').val() == '') {
+						if (params["header"] == false){
+							return;
+							alert("You should input schema.");
+						}
+						params["useOtherSchema"] = false;
+					} else {
+						params["useOtherSchema"] = true;
+						params["columns"] = $('#src_file_schema').val().split(params["srcDelimiter"]);
 					}
-					params["useOtherSchema"] = false;
-				} else {
-					params["useOtherSchema"] = true;
-					params["columns"] = $('#src_file_schema').val().split(params["srcDelimiter"]);
 				}
 
 				var jsonStr = JSON.stringify(params);
@@ -508,17 +507,16 @@
 					params["srcDelimiter"] = $('#dist_delimiter').val();
 					if (params["srcDelimiter"] == '')
 						return;
-				}
-
-				if ($('#dist_file_schema').val() == '') {
-					if (params["header"] == false){
-						return;
-						alert("You should input schema.");
+					if ($('#dist_file_schema').val() == '') {
+						if (params["header"] == false){
+							return;
+							alert("You should input schema.");
+						}
+						params["useOtherSchema"] = false;
+					} else {
+						params["useOtherSchema"] = true;
+						params["columns"] = $('#dist_file_schema').val().split(params["srcDelimiter"]);
 					}
-					params["useOtherSchema"] = false;
-				} else {
-					params["useOtherSchema"] = true;
-					params["columns"] = $('#dist_file_schema').val().split(params["srcDelimiter"]);
 				}
 
 				var jsonStr = JSON.stringify(params);
