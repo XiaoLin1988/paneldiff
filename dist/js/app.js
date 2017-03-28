@@ -395,7 +395,7 @@ function concatExclude(srcColumns, srcExcluded) {
     return srcColumns.concat(tmp);
 }
 
-function prepareAdvancedRule(reload, srcColumns, srcExcluded, distColumns, distExcluded, primaryKeys, srcTransformations, distTransformations, srcFiterSql, distFilterSql, matchBoth, compareCommon, randomSample) {
+function prepareAdvancedRule(reload, srcColumns, srcExcluded, distColumns, distExcluded, primaryKeys, srcTransformations, distTransformations, srcFiterSql, distFilterSql, matchBoth, columnMaps, randomSample) {
     if (reload == true) {   //determine to create or show
         resetRuleData();
 
@@ -510,11 +510,23 @@ function prepareAdvancedRule(reload, srcColumns, srcExcluded, distColumns, distE
                     }
                     if (srcNotExcluded) {
                         insertCheckLi(srcUl, srcColumns[i].name, srcColumns[i].dataType);
-                        insertMapper(mapper, false);
+                        var map = insertMapper(mapper, false);
+                        for (var j = 0; j < columnMaps.length; j++) {
+                            if (columnMaps[j].srcColumn == srcColumns[i]) {
+                                map.children[0].setAttribute("src", "../dist/img/green_arrow.png");
+                                break;
+                            }
+                        }
                     }
                 }else {
                     insertCheckLi(srcUl, srcColumns[i].name, srcColumns[i].dataType);
-                    insertMapper(mapper, false);
+                    var map = insertMapper(mapper, false);
+                    for (var j = 0; j < columnMaps.length; j++) {
+                        if (columnMaps[j].srcColumn == srcColumns[i].name) {
+                            map.children[0].setAttribute("src", "../dist/img/green_arrow.png");
+                            break;
+                        }
+                    }
                 }
             }
         }
