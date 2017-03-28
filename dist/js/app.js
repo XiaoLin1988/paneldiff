@@ -913,6 +913,9 @@ function makeInputJson(jobname, compareCommonColumnsOnly, validateRowsCount, ran
         distFile["header"] = distInput.header;
         distFile["srcDelimiter"] = distInput.srcDelimiter;
         distFile["useOtherSchema"] = false;
+        if (!distFile["header"]) {
+            distFile["columns"] = distInput.columns;
+        }
     } else if (distFile["srcFormat"] == "JSON") {
         var jdbcData = {};
         jdbcData["jdbcUrl"] = distInput.jdbcUrl;
@@ -941,6 +944,9 @@ function makeInputJson(jobname, compareCommonColumnsOnly, validateRowsCount, ran
         srcFile["header"] = srcInput.header;
         srcFile["srcDelimiter"] = srcInput.srcDelimiter;
         srcFile["useOtherSchema"] = false;
+        if (!srcFile["header"]) {
+            srcFile["columns"] = srcInput.columns;
+        }
     } else if (srcFile["srcFormat"] == "JSON") {
         var jdbcData = {};
         jdbcData["jdbcUrl"] = srcInput.jdbcUrl;
