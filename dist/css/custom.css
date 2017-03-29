@@ -76,16 +76,16 @@
 }
 
 #mapper div {
-    height: 40px;
+    height: 39px;
     padding: 0px;
     margin: 0px;
     text-align: center;
 }
 
 #mapper div img {
-    height: 30px;
-    width: 40px;
-    margin-top: 5px;
+    height: 25px;
+    width: 35px;
+    margin-top: 7px;
 }
 
 footer {

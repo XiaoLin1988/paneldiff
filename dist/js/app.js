@@ -159,43 +159,6 @@ function addLiCheckClickListener(span) {
     });
 }
 
-function makeBadgeType(type) {
-    switch (type) {
-        case 'boolean':
-            type = 'bol'
-            break;
-        case 'byte':
-            type = 'byt';
-            break;
-        case 'date':
-            type = 'dt';
-            break;
-        case 'double':
-            type = 'dbl';
-            break;
-        case 'float':
-            type = 'flt';
-            break;
-        case 'int':
-            type = 'int';
-            break;
-        case 'long':
-            type = 'lng';
-            break;
-        case 'short':
-            type = 'sht';
-            break;
-        case 'string':
-            type = 'str';
-            break;
-        case 'timestamp':
-            type = 'ts';
-            break;
-    }
-
-    return type;
-}
-
 function insertCheckLi(ul, text, type) {
     var li = document.createElement("li");
     li.setAttribute("class", "list-group-item");
@@ -208,8 +171,8 @@ function insertCheckLi(ul, text, type) {
 
     var badgespan = document.createElement("span");
     badgespan.setAttribute("class", "badge");
-    badgespan.setAttribute("style", "font-size: 9px; float: left; margin-top:4px;");
-    badgespan.innerHTML = makeBadgeType(type);
+    badgespan.setAttribute("style", "background:#5cb85c;width:60px;font-size: 9px; float: left; margin-top:4px;margin-right:5px;");
+    badgespan.innerHTML = type;
     li.appendChild(badgespan);
 
     var textdiv = document.createElement("div");
@@ -237,8 +200,8 @@ function insertLi(ul, text, type) {
 
     var badgespan = document.createElement("span");
     badgespan.setAttribute("class", "badge");
-    badgespan.setAttribute("style", "font-size: 9px; float: left; margin-top:4px;");
-    badgespan.innerHTML = makeBadgeType(type);
+    badgespan.setAttribute("style", "background:#5cb85c;width:60px;font-size: 9px; float: left; margin-top:4px;margin-right:5px;");
+    badgespan.innerHTML = type;
     li.appendChild(badgespan);
 
     var textdiv = document.createElement("div");
